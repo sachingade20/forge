@@ -244,7 +244,10 @@ class Docker(DockerBase):
 
     @task()
     def registry_get(self, api):
-        url = "https://%s/v2/%s" % (self.registry, api)
+        if 'localhost' in self.registry:
+            url = "http://%s/v2/%s" % (self.registry, api)
+        else:
+            url = "https://%s/v2/%s" % (self.registry, api)
         response = get(url, auth=(self.user, self.password),
                        headers={"Accept": 'application/vnd.docker.distribution.manifest.v2+json'},
                        verify=self.verify)
